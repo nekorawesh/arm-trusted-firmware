@@ -127,12 +127,6 @@
 			drive-push-pull;
 			bias-pull-up;
 		};
-		pins2 {
-			pinmux = <STM32_PINMUX('E', 3, AF9)>; /* SDMMC2_CK */
-			slew-rate = <1>;
-			drive-push-pull;
-			bias-pull-up;
-		};
 	};
 
 	uart8_pins_mx: uart8_mx-0 {
