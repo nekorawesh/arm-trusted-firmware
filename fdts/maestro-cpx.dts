@@ -203,7 +203,7 @@
 		CLK_UART6_DISABLED
 		CLK_UART78_HSI
 		CLK_SPDIF_DISABLED
-		CLK_FDCAN_PLL4Q
+		CLK_FDCAN_PLL4R
 		CLK_SAI1_DISABLED
 		CLK_SAI2_DISABLED
 		CLK_SAI3_DISABLED
@@ -217,17 +217,19 @@
 	pll2:st,pll@1 {
 		compatible = "st,stm32mp1-pll";
 		reg = <1>;
-		cfg = < 2 63 1 0 0 PQR(1,1,1) >;
+		cfg = < 2 65 1 0 0 PQR(1,1,1) >;
+		frac = < 0x1400 >;
 	};
 	pll3:st,pll@2 {
 		compatible = "st,stm32mp1-pll";
 		reg = <2>;
-		cfg = < 1 49 2 4 5 PQR(1,0,0) >;
+		cfg = < 1 33 1 16 36 PQR(1,0,0) >;
+		frac = < 0x1a04 >;
 	};
 	pll4:st,pll@3 {
 		compatible = "st,stm32mp1-pll";
 		reg = <3>;
-		cfg = < 1 39 3 5 5 PQR(1,1,0) >;
+		cfg = < 3 98 5 7 7 PQR(1,1,1) >;
 	};
 };
 
@@ -343,16 +345,18 @@
 				regulator-initial-mode = <0>;
 				regulator-over-current-protection;
 
-				lp-stop{
+				lp-stop {
 					regulator-on-in-suspend;
 					regulator-suspend-microvolt = <1200000>;
 				};
-
-				standby-ddr-sr{
+				lplv-stop {
+					regulator-on-in-suspend;
+					regulator-suspend-microvolt = <900000>;
+				};
+				standby-ddr-sr {
 					regulator-off-in-suspend;
 				};
-
-				standby-ddr-off{
+				standby-ddr-off {
 					regulator-off-in-suspend;
 				};
 			};
@@ -365,17 +369,19 @@
 				regulator-initial-mode = <0>;
 				regulator-over-current-protection;
 
-				lp-stop{
+				lp-stop {
 					regulator-suspend-microvolt = <1350000>;
 					regulator-on-in-suspend;
 				};
-
-				standby-ddr-sr{
+				lplv-stop {
 					regulator-suspend-microvolt = <1350000>;
 					regulator-on-in-suspend;
 				};
-
-				standby-ddr-off{
+				standby-ddr-sr {
+					regulator-suspend-microvolt = <1350000>;
+					regulator-on-in-suspend;
+				};
+				standby-ddr-off {
 					regulator-off-in-suspend;
 				};
 			};
@@ -389,17 +395,19 @@
 				regulator-initial-mode = <0>;
 				regulator-over-current-protection;
 
-				lp-stop{
+				lp-stop {
 					regulator-suspend-microvolt = <3300000>;
 					regulator-on-in-suspend;
 				};
-
-				standby-ddr-sr{
+				lplv-stop {
 					regulator-suspend-microvolt = <3300000>;
 					regulator-on-in-suspend;
 				};
-
-				standby-ddr-off{
+				standby-ddr-sr {
+					regulator-suspend-microvolt = <3300000>;
+					regulator-on-in-suspend;
+				};
+				standby-ddr-off {
 					regulator-suspend-microvolt = <3300000>;
 					regulator-on-in-suspend;
 				};
@@ -413,16 +421,10 @@
 				regulator-over-current-protection;
 				regulator-initial-mode = <0>;
 
-				lp-stop{
-					regulator-suspend-microvolt = <3300000>;
-					regulator-on-in-suspend;
-				};
-
-				standby-ddr-sr{
+				standby-ddr-sr {
 					regulator-off-in-suspend;
 				};
-
-				standby-ddr-off{
+				standby-ddr-off {
 					regulator-off-in-suspend;
 				};
 			};
@@ -449,15 +451,16 @@
 				regulator-always-on;
 				regulator-over-current-protection;
 
-				lp-stop{
+				lp-stop {
 					regulator-off-in-suspend;
 				};
-
-				standby-ddr-sr{
+				lplv-stop {
 					regulator-off-in-suspend;
 				};
-
-				standby-ddr-off{
+				standby-ddr-sr {
+					regulator-off-in-suspend;
+				};
+				standby-ddr-off {
 					regulator-off-in-suspend;
 				};
 			};
@@ -497,15 +500,16 @@
 				regulator-always-on;
 				regulator-over-current-protection;
 
-				lp-stop{
+				lp-stop {
 					regulator-on-in-suspend;
 				};
-
-				standby-ddr-sr{
+				lplv-stop {
 					regulator-on-in-suspend;
 				};
-
-				standby-ddr-off{
+				standby-ddr-sr {
+					regulator-on-in-suspend;
+				};
+				standby-ddr-off {
 					regulator-off-in-suspend;
 				};
 			};
@@ -515,7 +519,7 @@
 };
 
 &iwdg1{
-	secure-status = "okay";
+	secure-status = "disabled";
 
 	/* USER CODE BEGIN iwdg1 */
 	timeout-sec = <32>;
@@ -523,8 +527,8 @@
 };
 
 &iwdg2{
-	status = "okay";
-	secure-status = "okay";
+	status = "disabled";
+	secure-status = "disabled";
 
 	/* USER CODE BEGIN iwdg2 */
 	timeout-sec = <32>;
@@ -613,6 +617,8 @@
 	secure-status = "okay";
 
 	/* USER CODE BEGIN timers15 */
+	st,hsi-cal-input = <7>;
+	st,csi-cal-input = <8>;
 	/* USER CODE END timers15 */
 };
 
@@ -633,6 +639,7 @@
 	/* USER CODE BEGIN usbotg_hs */
 	phys = <&usbphyc_port1 0>;
 	phy-names = "usb2-phy";
+	dr_mode = "peripheral";
 	/* USER CODE END usbotg_hs */
 };
 
